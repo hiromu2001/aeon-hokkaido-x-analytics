@@ -1,110 +1,42 @@
 # aeon-hokkaido-x-analytics
 
-イオン北海道株式会社の公式X公開投稿を対象に、**統計分析・自然言語処理（NLP）・機械学習**を用いて、投稿内容とエンゲージメントの関係を分析する個人研究プロジェクトです。
+**地域小売のX投稿における地域性と反応：イオン北海道を対象とする測定・関連分析・将来予測の研究。**
 
-> **Disclaimer**  
-> 本リポジトリは個人による研究・学習目的のプロジェクトであり、イオン北海道株式会社およびX Corp.の公式プロジェクトではありません。
+本リポジトリは個人の研究・学習プロジェクトです。イオン北海道株式会社およびX Corp.の公式プロジェクトではありません。
 
-## Research goal
+## 研究の中心
 
-単純な「バズった投稿ランキング」ではなく、先行研究に基づいて次を検証します。
+「北海道」という語の有無を超えて、**産地情報・店舗の具体性・地域の人や文化への言及が、懸賞参加条件による反応と区別したときにも反応と関連するか**を検討します。
 
-- 投稿内容・表現・画像/動画・投稿時刻と反応の関係
-- いいね / リポスト / 返信を分けたカウントデータ分析
-- 北海道・道産・地域名などの**地域性**と反応の関係
-- Sentence Embedding / Topic Modelingによる投稿内容の定量化
-- LightGBM / CatBoost等によるエンゲージメント予測
-- SHAPによる予測モデルの解釈
-- 季節・曜日・時間帯を含む時系列的な変化
+地域性と食品小売SNSの研究は既にあります。Numan et al. (2026、オンライン公開2025) を小売・地域性の基準、Tanaka & Huang (2024) を日本企業Twitterの基準に据えます。独自性はモデル名ではなく、地域性の測定を明確にし、観測期間を揃え、日本の地域小売Xで既存知見が成り立つ条件と限界を調べる点に置きます。世界初・因果効果は主張しません。
 
-## Research design
+## 分析の優先順位
 
-```text
-X API
-  ↓
-Raw posts（ローカル保存・Git管理外）
-  ↓
-Cleaning / Feature engineering
-  ├─ text length / hashtag / URL / emoji
-  ├─ media type
-  ├─ CTA / question / promotion
-  ├─ local_score
-  └─ season / weekday / hour
-  ↓
-EDA
-  ↓
-Statistical modeling
-  ├─ Poisson regression
-  └─ Negative Binomial regression
-  ↓
-NLP
-  ├─ Sentence Embedding
-  ├─ Topic Modeling
-  └─ sentiment / emotion
-  ↓
-Machine Learning
-  ├─ LightGBM / CatBoost
-  └─ SHAP
-  ↓
-Time-based validation / Sensitivity analysis
-  ↓
-Report
-```
+1. **測定**：投稿後7日（168〜174時間）の反応を原則とし、過去投稿の累積件数とは区別する。
+2. **主分析**：懸賞・報酬付き反応要求のない投稿で、実質的地域性といいね件数の調整済み関連を推定する。
+3. **副次分析**：リポスト・返信、地域性の種類、懸賞参加条件、時期別の再現性を調べる。
+4. **予測**：投稿時点で利用可能な情報だけを使い、地域性や本文特徴が単純な基準モデルを将来データで上回るか確認する。
 
-## Key research questions
+公開反応数は購入・来店・好意・地域住民の反応を直接測りません。SHAPも因果効果ではありません。
 
-1. どの投稿カテゴリが likes / reposts / replies と関連するか。
-2. 画像・動画・CTA・質問・価格表現・文章長などは反応とどう関連するか。
-3. 「北海道」「道産」「札幌」「旭川」「函館」「十勝」「オホーツク」等の地域性は反応と関連するか。
-4. 季節・曜日・時間帯によって投稿テーマと反応の関係は変わるか。
-5. 投稿前に利用できる情報だけで、将来のエンゲージメントをどこまで予測できるか。
+## 読む順序
 
-## Planned sample
+| 文書 | 内容 |
+|---|---|
+| [レビュー](docs/review.md) | 元の設計の問題、重要度、変更点、未解決事項 |
+| [先行研究](docs/references.md) | 16件の研究・方法論資料と公式資料、確認範囲と採用理由 |
+| [検索記録](docs/literature_search.md) | 検索日・検索式・採否・調査の限界 |
+| [研究計画](docs/research_plan.md) | 仮説、推定対象、統計モデル、予測評価、拡張研究 |
+| [コーディング規約](docs/codebook.md) | 地域性・懸賞・内容分類の操作的定義と一致度評価 |
+| [データ収集仕様](docs/data_protocol.md) | 観測時点、データ辞書、欠測・重複・API確認 |
+| [事前固定チェック](docs/preregistration.md) | 本収集・検定の前に埋めて固定する項目 |
 
-- Pilot: 約500投稿
-- Main analysis: 1,000〜3,200投稿を目安
+## 現在の状態
 
-最初は小規模に取得して分析設計を確認し、必要に応じて拡張します。
+2026-09-17：先行研究レビューと設計の改訂まで完了。**実投稿の収集、統計分析、機械学習の実装・評価は未実施**です。研究結果や予測精度はまだありません。事前登録チェックは未登録のドラフトです。
 
-## Important methodological rules
+まず公式アカウントの同定とAPI取得可能性を確認し、少数の接続検証、独立したpilot、設計の固定、本収集の順に進みます。APIの取得件数上限を必要標本数の根拠にしません。
 
-- likes / reposts / replies は原則として**別々の目的変数**として扱う。
-- カウントデータの過分散を確認し、Poissonを決め打ちせずNegative Binomialも比較する。
-- キャンペーン・懸賞投稿を含む分析と除外した分析を両方行う。
-- 機械学習ではランダム分割だけでなく**時間順holdout**を用いる。
-- SHAPの結果を因果効果として解釈しない。
-- 観察データからは原則として「関連」「予測寄与」までを結論とする。
+## データ管理
 
-## Repository structure
-
-```text
-.
-├── README.md
-├── docs/
-│   ├── research_plan.md
-│   └── references.md
-├── data/              # raw dataはGit管理しない
-├── notebooks/         # future
-├── src/               # future
-└── outputs/           # future
-```
-
-## Literature baseline
-
-日本の企業X分析に近い先行研究として、Tanaka & Huang (2024) がSHARP公式Twitterの500投稿を対象に、画像/動画、リンク、CTA、質問、投稿内容、曜日、文字数等とlikes / retweets / repliesの関係を分析しています。本研究ではこれを主要なベースラインの一つとし、小売・北海道地域性・NLP/MLを追加します。
-
-詳細は [`docs/research_plan.md`](docs/research_plan.md) と [`docs/references.md`](docs/references.md) を参照してください。
-
-## Data / ethics
-
-- 主対象は企業公式アカウントの公開投稿。
-- 一般ユーザーの返信本文はPrimary analysisでは原則収集しない。
-- API tokenや社内Analyticsなどの非公開情報は絶対にcommitしない。
-- X APIのDeveloper Agreement / Policy / display requirementsを実装時に再確認する。
-- raw APIレスポンスはGitHubへ公開せず、必要な派生特徴・集約結果を中心に管理する。
-
-## Status
-
-**Planning / Literature review**
-
-実装は未着手。先行研究レビューと研究設計を先に固める。
+rawレスポンス・投稿本文・画像・認証情報・非公開Analyticsは公開しません。一般利用者の返信本文は主分析で収集しません。派生データも自動的に公開可能とはせず、再識別性・再配布条件を確認します。共有の基本はコード、規約、合成データ、集約結果です。
