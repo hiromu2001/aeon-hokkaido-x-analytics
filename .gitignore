@@ -1,0 +1,28 @@
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Raw / private data
+data/raw/
+data/private/
+data/*.json
+data/*.jsonl
+data/*.csv
+
+# Local outputs
+outputs/private/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
